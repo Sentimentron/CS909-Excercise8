@@ -5,6 +5,7 @@ from gensim import corpora, models, similarities
 import nltk
 from collections import Counter
 import re
+import csv
 
 def preprocess_titles():
     stopwords = nltk.corpus.stopwords.words('english')
@@ -118,20 +119,5 @@ def evaluate(model_tuple1, corpus_tuple2):
     sematic_model = semantic_model[corpus]
 
 if __name__ == "__main__":
-    #export_to_arff("TRAIN", "title_train.arff")
-    #export_to_arff("TEST", "title_test.arff")
-
-    corpus_tuple = build_title_model("TRAIN")
-    topics, tfidf, lsi, corpus_lsi, dictionary = build_lsi_representation(corpus_tuple)
-    output_f = open('title_train_lsi.arff', 'w')
-    print_arff_lsi_header(output_f, 10, set(topics))
-    print_arff_lsi_data(output_f, topics, corpus_lsi)
-    output_f.close()
-
-    corpus_tuple = build_title_model("TEST", corpus_tuple[2])
-    topics, tfidf, lsi, corpus_lsi, dictionary = build_lsi_representation(corpus_tuple)
-    output_f = open('title_test_lsi.arff', 'w')
-    print_arff_lsi_header(output_f, 10, set(topics))
-    print_arff_lsi_data(output_f, topics, corpus_lsi)
-    output_f.close()
-
+    export_to_arff("TRAIN", "title_train.arff")
+    export_to_arff("TEST", "title_test.arff")
