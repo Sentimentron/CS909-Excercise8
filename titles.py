@@ -98,7 +98,6 @@ def build_lsi_representation(corpus_tuple):
 
 def print_arff_lsi_header(output_f, topics, categories):
     print >> output_f, '@relation "titles"'
-    print >> output_f, '@attribute word string' % (f,)
     for f in range(topics):
         print >> output_f, '@attribute topic_%d numeric' % (f,)
     print >> output_f, '@attribute category {%s}' % (','.join(categories))
@@ -106,9 +105,11 @@ def print_arff_lsi_header(output_f, topics, categories):
 
 def print_arff_lsi_data(output_f, topics, corpus_lsi):
     for topic, doc in zip(topics, corpus_lsi):
-        for i,val in doc:
-            print >> output_f, val, ',',
-        print >> output_f, topic
+        buf = [0 for _ in range(10)]
+        for i, val in doc:
+            buf[i] = val
+        buf.append(topic)
+        print >> output_f, ','.join([str(i) for i in buf])
 
 def evaluate(model_tuple1, corpus_tuple2):
     _, term_model, semantic_model, _, dictionary = model_tuple1
