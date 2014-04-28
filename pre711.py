@@ -1,59 +1,56 @@
-#!/usr/bin/env python
-"""
-    This test is mostly adapted from 
-        http://www.nltk.org/book/ch05.html
-"""
-
+from corpus import filtered_corpus
+from gensim import corpora, models, similarities
 import nltk
-from nltk.corpus import brown
+from collections import Counter
+import re
+import csv
 
-# Load the sentences
-brown_tagged_sents = brown.tagged_sents(categories='news')
-brown_sents = brown.sents(categories='news')
+def preprocess_docs():
+    stopwords = nltk.corpus.stopwords.words('english')
+    stemmer = nltk.stem.PorterStemmer()
+    for train, topic, title, text in filtered_corpus():
+        text = [i for i in nltk.word_tokenize(text) if i not in stopwords]
+        text = [stemmer.stem(s) for s in text]
+        yield train, topic, text
 
-# Baseline: what's the most common tag?
-tags = [tag for (word, tag) in brown.tagged_words(categories='news')]
-most_common_tag = nltk.FreqDist(tags).max()
-default_tagger = nltk.DefaultTagger(most_common_tag)
-print "Default: %.2f" % (default_tagger.evaluate(brown_tagged_sents)*100.0,)
+def export_to_arff(mode, output_path):
+    assert mode in ["TRAIN", "TEST"]
 
-# Regexp
-patterns = [
-     (r'.*ing$', 'VBG'),               # gerunds
-     (r'.*ed$', 'VBD'),                # simple past
-     (r'.*es$', 'VBZ'),                # 3rd singular present
-     (r'.*ould$', 'MD'),               # modals
-     (r'.*\'s$', 'NN$'),               # possessive nouns
-     (r'.*s$', 'NNS'),                 # plural nouns
-     (r'^-?[0-9]+(.[0-9]+)?$', 'CD'),  # cardinal numbers
-     (r'.*', 'NN')                     # nouns (default)
-]
-regexp_tagger = nltk.RegexpTagger(patterns)
-print "Regexp: %.2f" % (regexp_tagger.evaluate(brown_tagged_sents)*100,)
+    # Read preprocessed titles
+    corpus = [(topic, text) for train, topic, text in preprocess_docs() if train == mode]
 
-# Lookup 
-fd = nltk.FreqDist(brown.words(categories='news'))
-cfd = nltk.ConditionalFreqDist(brown.tagged_words(categories='news'))
-most_freq_words = fd.keys()[:100]
-likely_tags = dict((word, cfd[word].max()) for word in most_freq_words)
-baseline_tagger = nltk.UnigramTagger(model=likely_tags)
-print "Lookup: %.2f" % (baseline_tagger.evaluate(brown_tagged_sents) * 100,)
+    # Create some ARFF atributes
+    attributes = set([])
+    for topic, title in corpus:
+        for word in title:
+            regexp = re.compile(r'[^a-zA-Z]')
+            if regexp.search(word) is not None:
+                continue
+            attributes.add(word)
 
-#N-grams - separate training and test data, 90% - 10%
-size = len(brown_tagged_sents) * 0.9
-size = int(size)
+    topics = set([])
+    for topic, title in corpus:
+        topics.add(topic)
 
-train_sents = brown_tagged_sents[:size]
-test_sents  = brown_tagged_sents[size:]
-unigram_tagger = nltk.UnigramTagger(train_sents)
-print "Unigram: %.2f" % (100 * unigram_tagger.evaluate(test_sents),)
+    attributes = sorted(attributes)
+    output_f = open(output_path, 'w')
+    print >> output_f, '@relation "docs"'
+    for f in attributes:
+        print >> output_f, '@attribute %s {present, notPresent}' % (f,)
+    print >> output_f, '@attribute topicClass {%s}' % (','.join(topics),)
 
-bigram_tagger = nltk.BigramTagger(train_sents)
-print "Bigram: %.2f" % (100 * bigram_tagger.evaluate(test_sents),)
+    print >> output_f, '@data'
+    for topic, title in corpus:
+        row = dict(((u, 'notPresent') for u in attributes))
+        for word in title:
+            row[word] = 'present'
+        buf = []
+        for attr in attributes:
+            buf.append(row[attr])
+        buf.append(topic)
+        print >> output_f, ','.join(buf)
+    output_f.close()
 
-# Ensemble
-unigram_tagger = nltk.BigramTagger(train_sents, backoff=default_tagger)
-bigram_tagger = nltk.BigramTagger(train_sents, backoff=unigram_tagger)
-print "Ensemble: %.2f" % (100 * bigram_tagger.evaluate(test_sents),)
-
-
+if __name__ == "__main__":
+    export_to_arff("TRAIN", "PRE711_train.arff")
+    export_to_arff("TEST", "PRE711_test.arff")
