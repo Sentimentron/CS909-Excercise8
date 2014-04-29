@@ -1,0 +1,482 @@
+Titles [PRE708_Classifier]
+[[1049    0    1    0    0   26    0    1    4    0] e
+ [   1    0    1    0    3    1   64    0    1    0] w
+ [   3    0  134    0   13   18    1    9    2    0] m
+ [   0    0    0    0    4    0   49    0    3    0] c
+ [   2    0    5    0   88    8    9    2    3    0] t
+ [  19    0    6    0    2  682    3    2    4    0] a
+ [   1    0    3    0   13    1  125    0    3    2] g
+ [   2    0   59    0    2    4    1   64    1    0] i
+ [   2    0    3    0    3   23    3    0  149    3] c
+ [   1    0    6    0    5   13    8    1   38   15]] s
+
+Documents
+ [[1056    0    1    0    1   21    0    0    2    0] e
+ [   5    0    0    0    1    0   64    0    0    1]  w
+ [  38    0  130    0    4    0    0    7    1    0]  m
+ [   8    0    0    0    2    0   46    0    0    0]  c
+ [   6    0    9    0  100    0    1    0    1    0]  t
+ [  84    0    2    0    4  620    0    0    8    0]  a
+ [  14    0    2    0   11    0  116    0    0    5]  g
+ [  31    0   68    0    2    1    1   30    0    0]  i
+ [  26    0    0    0    5    6    0    0  146    3]  c
+ [   3    0    0    0    8    3    8    0   44   21]] s
+     e    w    m    c    t    a    g    i   c     s
+
+There are a number of problematic classes with little or no F-measure
+
+       earn       0.83      0.98      0.90      1081
+      wheat       0.00      0.00      0.00        71*
+   money-fx       0.61      0.72      0.66       180
+       corn       0.00      0.00      0.00        56*
+      trade       0.72      0.85      0.78       117
+        acq       0.95      0.86      0.91       718
+      grain       0.49      0.78      0.60       148
+   interest       0.81      0.23      0.35       133
+      crude       0.72      0.78      0.75       186
+       ship       0.70      0.24      0.36        87*
+
+avg / total       0.78      0.80      0.77      2777
+
+Amongst the titles, improving the f-measure of wheat provides the largest feasible increase
+
+Currently, everything in wheat gets classed as grain.
+
+LinearSVC did do a little better than Naive bayes in PRE715
+ichards-MacBook-Air:CS909-PRJ2311 rtownsend$ python PRE715.py
+Creating input...
+Testing...
+**classification_report**
+<class 'sklearn.naive_bayes.MultinomialNB'>
+0.799063737847
+[[1056    0    1    0    1   21    0    0    2    0]
+ [   5    0    0    0    1    0   64    0    0    1]
+ [  38    0  130    0    4    0    0    7    1    0]
+ [   8    0    0    0    2    0   46    0    0    0]
+ [   6    0    9    0  100    0    1    0    1    0]
+ [  84    0    2    0    4  620    0    0    8    0]
+ [  14    0    2    0   11    0  116    0    0    5]
+ [  31    0   68    0    2    1    1   30    0    0]
+ [  26    0    0    0    5    6    0    0  146    3]
+ [   3    0    0    0    8    3    8    0   44   21]]
+/Library/Python/2.7/site-packages/sklearn/metrics/metrics.py:1905: UserWarning: The sum of true positives and false positives are equal to zero for some labels. Precision is ill defined for those labels [1 3]. The precision and recall are equal to zero for some labels. fbeta_score is ill defined for those labels [1 3].
+  average=None)
+             precision    recall  f1-score   support
+
+       earn       0.83      0.98      0.90      1081
+      wheat       0.00      0.00      0.00        71
+   money-fx       0.61      0.72      0.66       180
+       corn       0.00      0.00      0.00        56
+      trade       0.72      0.85      0.78       117
+        acq       0.95      0.86      0.91       718
+      grain       0.49      0.78      0.60       148
+   interest       0.81      0.23      0.35       133
+      crude       0.72      0.78      0.75       186
+       ship       0.70      0.24      0.36        87
+
+avg / total       0.78      0.80      0.77      2777
+
+**classification_report**
+<class 'sklearn.tree.tree.DecisionTreeClassifier'>
+0.756571840115
+[[998   0   2   0   3  60  12   2   4   0]
+ [  1  57   0   4   1   5   3   0   0   0]
+ [  6   1  97   0   6  45   1  18   6   0]
+ [  1  20   0  11   3   9  10   1   0   1]
+ [  2   2  12   0  88   7   3   1   1   1]
+ [ 56   2   3   2   4 631   2   3  12   3]
+ [  2  68   4  20   6  17  26   1   1   3]
+ [  6   1  47   0   6  40   0  31   2   0]
+ [  4   2   0   0   1  36   0   1 137   5]
+ [  4   2   0   3   2  10   4   0  37  25]]
+             precision    recall  f1-score   support
+
+       earn       0.92      0.92      0.92      1081
+      wheat       0.37      0.80      0.50        71
+   money-fx       0.59      0.54      0.56       180
+       corn       0.28      0.20      0.23        56
+      trade       0.73      0.75      0.74       117
+        acq       0.73      0.88      0.80       718
+      grain       0.43      0.18      0.25       148
+   interest       0.53      0.23      0.32       133
+      crude       0.69      0.74      0.71       186
+       ship       0.66      0.29      0.40        87
+
+avg / total       0.75      0.76      0.74      2777
+
+**classification_report**
+<class 'sklearn.ensemble.forest.RandomForestClassifier'>
+0.768455167447
+[[1026    0    1    0    0   53    0    0    1    0]
+ [   3    8    0    4    1   11   40    1    0    3]
+ [   3    0  100    0   14   48    1   12    2    0]
+ [   5    3    0    4    4   11   28    0    1    0]
+ [   1    0   17    0   88    7    3    0    1    0]
+ [  39    0    1    0    2  674    0    0    2    0]
+ [   8   10    0    6   12   24   83    1    1    3]
+ [   6    0   49    0    9   36    1   32    0    0]
+ [  18    1    6    0    7   49    1    0   89   15]
+ [   7    1    6    0    4   11    9    1   18   30]]
+             precision    recall  f1-score   support
+
+       earn       0.92      0.95      0.93      1081
+      wheat       0.35      0.11      0.17        71
+   money-fx       0.56      0.56      0.56       180
+       corn       0.29      0.07      0.11        56
+      trade       0.62      0.75      0.68       117
+        acq       0.73      0.94      0.82       718
+      grain       0.50      0.56      0.53       148
+   interest       0.68      0.24      0.36       133
+      crude       0.77      0.48      0.59       186
+       ship       0.59      0.34      0.43        87
+
+avg / total       0.75      0.77      0.75      2777
+
+**classification_report**
+<class 'sklearn.svm.classes.LinearSVC'>
+0.817068779258
+[[1032    0    3    0    0   43    0    1    2    0]
+ [   1   16    0    2    1    5   44    0    0    2]
+ [   0    0  105    0    6   40    0   29    0    0]
+ [   0    3    0    9    2    9   33    0    0    0]
+ [   0    0    6    0  103    6    2    0    0    0]
+ [  25    0    1    0    1  683    0    0    8    0]
+ [   3   17    1   11   11   16   85    0    0    4]
+ [   0    0   37    0    5   32    0   59    0    0]
+ [   3    0    1    0    1   33    0    1  138    9]
+ [   4    0    3    0    0    5    3    0   33   39]]
+             precision    recall  f1-score   support
+
+       earn       0.97      0.95      0.96      1081
+      wheat       0.44      0.23      0.30        71
+   money-fx       0.67      0.58      0.62       180
+       corn       0.41      0.16      0.23        56
+      trade       0.79      0.88      0.83       117
+        acq       0.78      0.95      0.86       718
+      grain       0.51      0.57      0.54       148
+   interest       0.66      0.44      0.53       133
+      crude       0.76      0.74      0.75       186
+       ship       0.72      0.45      0.55        87
+
+avg / total       0.81      0.82      0.81      2777
+
+That lead disappears on titles [PRE716]
+
+Richards-MacBook-Air:CS909-PRJ2311 rtownsend$ python PRE716.py
+Creating input...
+Testing...
+**classification_report**
+<class 'sklearn.naive_bayes.MultinomialNB'>
+0.830392509903
+[[1049    0    1    0    0   26    0    1    4    0]
+ [   1    0    1    0    3    1   64    0    1    0]
+ [   3    0  134    0   13   18    1    9    2    0]
+ [   0    0    0    0    4    0   49    0    3    0]
+ [   2    0    5    0   88    8    9    2    3    0]
+ [  19    0    6    0    2  682    3    2    4    0]
+ [   1    0    3    0   13    1  125    0    3    2]
+ [   2    0   59    0    2    4    1   64    1    0]
+ [   2    0    3    0    3   23    3    0  149    3]
+ [   1    0    6    0    5   13    8    1   38   15]]
+/Library/Python/2.7/site-packages/sklearn/metrics/metrics.py:1905: UserWarning: The sum of true positives and false positives are equal to zero for some labels. Precision is ill defined for those labels [1 3]. The precision and recall are equal to zero for some labels. fbeta_score is ill defined for those labels [1 3].
+  average=None)
+             precision    recall  f1-score   support
+
+       earn       0.97      0.97      0.97      1081
+      wheat       0.00      0.00      0.00        71
+   money-fx       0.61      0.74      0.67       180
+       corn       0.00      0.00      0.00        56
+      trade       0.66      0.75      0.70       117
+        acq       0.88      0.95      0.91       718
+      grain       0.48      0.84      0.61       148
+   interest       0.81      0.48      0.60       133
+      crude       0.72      0.80      0.76       186
+       ship       0.75      0.17      0.28        87
+
+avg / total       0.81      0.83      0.81      2777
+
+**classification_report**
+<class 'sklearn.tree.tree.DecisionTreeClassifier'>
+0.780698595607
+[[1046    0    4    0    0   25    0    2    4    0]
+ [   6   42    0    8    5    1    7    1    1    0]
+ [  32    2   92    0    8   23    2   19    2    0]
+ [   3   19    0   25    4    1    3    1    0    0]
+ [  14    1    7    1   79    9    0    1    5    0]
+ [  54    2   11    0    2  634    0    2   13    0]
+ [  10   60    2   32   13    4   18    2    3    4]
+ [   9    1   39    2    1    8    0   72    1    0]
+ [  17    1    2    0    1   20    2    0  138    5]
+ [   7    2    1    0    2    6    4    0   43   22]]
+             precision    recall  f1-score   support
+
+       earn       0.87      0.97      0.92      1081
+      wheat       0.32      0.59      0.42        71
+   money-fx       0.58      0.51      0.54       180
+       corn       0.37      0.45      0.40        56
+      trade       0.69      0.68      0.68       117
+        acq       0.87      0.88      0.88       718
+      grain       0.50      0.12      0.20       148
+   interest       0.72      0.54      0.62       133
+      crude       0.66      0.74      0.70       186
+       ship       0.71      0.25      0.37        87
+
+avg / total       0.77      0.78      0.76      2777
+
+**classification_report**
+<class 'sklearn.ensemble.forest.RandomForestClassifier'>
+0.801224342816
+[[1052    0    2    0    0   23    0    0    4    0]
+ [   4   19    0    2    5    4   33    1    0    3]
+ [  20    0  103    0   10   29    0   16    0    2]
+ [   1    3    1    9    4    4   30    1    1    2]
+ [  10    1    6    2   81   13    1    2    1    0]
+ [  48    0    3    1    1  658    1    0    6    0]
+ [   6   19    3    9   13   10   78    1    1    8]
+ [   8    0   37    0    3   10    1   74    0    0]
+ [  18    0    2    0    1   34    0    0  122    9]
+ [   9    0    3    0    1   23    3    0   19   29]]
+             precision    recall  f1-score   support
+
+       earn       0.89      0.97      0.93      1081
+      wheat       0.45      0.27      0.34        71
+   money-fx       0.64      0.57      0.61       180
+       corn       0.39      0.16      0.23        56
+      trade       0.68      0.69      0.69       117
+        acq       0.81      0.92      0.86       718
+      grain       0.53      0.53      0.53       148
+   interest       0.78      0.56      0.65       133
+      crude       0.79      0.66      0.72       186
+       ship       0.55      0.33      0.41        87
+
+avg / total       0.78      0.80      0.79      2777
+
+**classification_report**
+<class 'sklearn.svm.classes.LinearSVC'>
+0.828592005762
+[[1052    0    1    0    0   24    0    1    3    0]
+ [   4   20    0    4    4    3   32    2    0    2]
+ [   8    0  111    0   13   23    3   17    5    0]
+ [   2    4    0   17    5    2   24    2    0    0]
+ [   5    0    4    0   96    2    5    2    3    0]
+ [  26    0    2    0    4  677    0    2    6    1]
+ [   6   20    2   20   12    6   72    2    2    6]
+ [   1    1   43    0    2    4    3   76    3    0]
+ [   5    0    1    0    3   20    2    0  148    7]
+ [   8    0    0    0    1   12    1    0   33   32]]
+             precision    recall  f1-score   support
+
+       earn       0.94      0.97      0.96      1081
+      wheat       0.44      0.28      0.34        71
+   money-fx       0.68      0.62      0.65       180
+       corn       0.41      0.30      0.35        56
+      trade       0.69      0.82      0.75       117
+        acq       0.88      0.94      0.91       718
+      grain       0.51      0.49      0.50       148
+   interest       0.73      0.57      0.64       133
+      crude       0.73      0.80      0.76       186
+       ship       0.67      0.37      0.47        87
+
+avg / total       0.82      0.83      0.82      2777
+
+If we bring up PRE715 LinearSVC for documents and PRE716 NB for documents
+(Naive Bayes titles)
+[[1049    0    1    0    0   26    0    1    4    0]
+ [   1    0    1    0    3    1   64    0    1    0]
+ [   3    0  134    0   13   18    1    9    2    0]
+ [   0    0    0    0    4    0   49    0    3    0]
+ [   2    0    5    0   88    8    9    2    3    0]
+ [  19    0    6    0    2  682    3    2    4    0]
+ [   1    0    3    0   13    1  125    0    3    2]
+ [   2    0   59    0    2    4    1   64    1    0]
+ [   2    0    3    0    3   23    3    0  149    3]
+ [   1    0    6    0    5   13    8    1   38   15]]
+
+ (LinearSVC documents)
+[[1032    0    3    0    0   43    0    1    2    0]
+ [   1   16    0    2    1    5   44    0    0    2]
+ [   0    0  105    0    6   40    0   29    0    0]
+ [   0    3    0    9    2    9   33    0    0    0]
+ [   0    0    6    0  103    6    2    0    0    0]
+ [  25    0    1    0    1  683    0    0    8    0]
+ [   3   17    1   11   11   16   85    0    0    4]
+ [   0    0   37    0    5   32    0   59    0    0]
+ [   3    0    1    0    1   33    0    1  138    9]
+ [   4    0    3    0    0    5    3    0   33   39]]
+ 	 	  *	 		*	 *                   *    *
+ 	 e    w    m    c    t    a    g    i    c    s
+
+ Does seem that for wheat, corn, trade, crude and ship, LinearSVC outperforms Naive Bayes titles. So perhaps an ensemble scheme wherein we consider the accuracy of each classifier based on the available classes might be effective.
+
+ To test this, have to confirm that we can observe matching F-measure differences under some test condition. To confirm that, PRE717 uses a 60-40 training-test split.
+
+ <class 'sklearn.svm.classes.LinearSVC'>
+0.760041914076
+[[1100    0    0    0    1   33    0    2    3    0]
+ [   4    8    0   11    0    0   58    0    0    4]
+ [  32    0  131    0   22    2    1   46    2    0]
+ [   8    8    1    6    2    0   53    1    0    2]
+ [  13    1   12    0  103    3    4    2    3    1]
+ [  66    0    0    0    0  595    0    0    4    2]
+ [  14   50    2   33    3    3   48    1    1   11]
+ [  27    0   51    0    3    2    0   55    1    0]
+ [  22    0    0    1    5   11    0    0   97   11]
+ [   1    1    0    1    2    5    6    0   12   33]]
+             precision    recall  f1-score   support
+
+       earn       0.85      0.97      0.91      1139
+      wheat       0.12      0.09      0.10        85
+   money-fx       0.66      0.56      0.61       236
+       corn       0.12      0.07      0.09        81
+      trade       0.73      0.73      0.73       142
+        acq       0.91      0.89      0.90       667
+      grain       0.28      0.29      0.29       166
+   interest       0.51      0.40      0.45       139
+      crude       0.79      0.66      0.72       147
+       ship       0.52      0.54      0.53        61
+
+avg / total       0.74      0.76      0.75      2863
+
+**classification_report**
+<class 'sklearn.naive_bayes.MultinomialNB'>
+0.799511002445
+[[1092    0    7    0    3   37    0    1   10    0]
+ [   0    2    2    0    4    4   57    0    2    1]
+ [   0    0  177    0   11    6    1   16    2    0]
+ [   1    2    4    1    0    0   62    1    0    0]
+ [   2    0   17    0  105   12    6    1    3    0]
+ [  24    0    3    0    1  631    0    2    2    1]
+ [   1   33    5   12    6   12   94    1    4    3]
+ [   3    0   70    0    4    4    2   54    0    0]
+ [   8    0    9    0    6   20    2    1  112    6]
+ [   3    0    1    0    7    8   16    2   17   21]]
+             precision    recall  f1-score   support
+
+       earn       0.96      0.95      0.96      1150
+      wheat       0.05      0.03      0.04        72
+   money-fx       0.60      0.83      0.70       213
+       corn       0.08      0.01      0.02        71
+      trade       0.71      0.72      0.72       146
+        acq       0.86      0.95      0.90       664
+      grain       0.39      0.55      0.46       171
+   interest       0.68      0.39      0.50       137
+      crude       0.74      0.68      0.71       164
+       ship       0.66      0.28      0.39        75
+
+avg / total       0.79      0.80      0.79      2863
+
+Looking at the reports together
+LinearSVC
+
+             precision    recall  f1-score   support
+
+       earn       0.85      0.97      0.91      1139
+      wheat       0.12      0.09      0.10*        85
+   money-fx       0.66      0.56      0.61       236
+       corn       0.12      0.07      0.09*        81
+      trade       0.73      0.73      0.73*       142
+        acq       0.91      0.89      0.90       667
+      grain       0.28      0.29      0.29       166
+   interest       0.51      0.40      0.45       139
+      crude       0.79      0.66      0.72*       147
+       ship       0.52      0.54      0.53*        61
+
+MultinomialNB
+avg / total       0.74      0.76      0.75      2863
+
+             precision    recall  f1-score   support
+
+       earn       0.96      0.95      0.96      1150
+      wheat       0.05      0.03      0.04        72
+   money-fx       0.60      0.83      0.70       213
+       corn       0.08      0.01      0.02        71
+      trade       0.71      0.72      0.72       146
+        acq       0.86      0.95      0.90       664
+      grain       0.39      0.55      0.46       171
+   interest       0.68      0.39      0.50       137
+      crude       0.74      0.68      0.71       164
+       ship       0.66      0.28      0.39        75
+
+avg / total       0.79      0.80      0.79      2863
+
+Wheat, corn, trade, grain, crude and ship all have higher F-measures under LinearSVC.
+
+To implement the voting scheme: have to zip together these outcomes. PRE718 implements a simple weighted voting scheme based on the above F-measures. It turns out that actually there's a slight decrease in accuracy when the two are combined, but this will help us determine the next step.
+
+PRE719 attempts to see if we can build a better wheat/grain classifier
+For titles:
+
+LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=l2, multi_class=ovr, penalty=l2,
+     random_state=None, tol=0.0001, verbose=0)
+0.936982355059
+[[  20   30   21]
+ [   2 2542   14]
+ [  20   88   40]]
+                  precision    recall  f1-score   support
+
+           grain       0.53      0.27      0.36       148
+_NOT_WHEAT_GRAIN       0.96      0.99      0.97      2558
+           wheat       0.48      0.28      0.35        71
+
+     avg / total       0.92      0.94      0.93      2777
+
+MultinomialNB(alpha=1.0, class_prior=None, fit_prior=True)
+0.921137918617
+[[   0   71    0]
+ [   0 2558    0]
+ [   0  148    0]]
+/Library/Python/2.7/site-packages/sklearn/metrics/metrics.py:1905: UserWarning: The sum of true positives and false positives are equal to zero for some labels. Precision is ill defined for those labels [2 0]. The precision and recall are equal to zero for some labels. fbeta_score is ill defined for those labels [2 0].
+  average=None)
+                  precision    recall  f1-score   support
+
+           grain       0.00      0.00      0.00       148
+_NOT_WHEAT_GRAIN       0.92      1.00      0.96      2558
+           wheat       0.00      0.00      0.00        71
+
+     avg / total       0.85      0.92      0.88      2777
+
+For text... it's too slow
+
+WEKA (supervised discretisation)
+Correctly Classified Instances        2573               92.6539 %
+Incorrectly Classified Instances       204                7.3461 %
+Kappa statistic                          0.5843
+Mean absolute error                      0.0523
+Root mean squared error                  0.1882
+Relative absolute error                 49.8024 %
+Root relative squared error             84.6739 %
+Coverage of cases (0.95 level)          97.1192 %
+Mean rel. region size (0.95 level)      37.8346 %
+Total Number of Instances             2777
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.696     0.054      0.419     0.696     0.523      0.938    grain
+                 0.408     0.013      0.446     0.408     0.426      0.932    wheat
+                 0.954     0.114      0.99      0.954     0.972      0.953    notGrainOrWheat
+Weighted Avg.    0.927     0.108      0.946     0.927     0.9
+
+
+WEKA (unsupervised discretisation)
+Correctly Classified Instances        2576               92.762  %
+Incorrectly Classified Instances       201                7.238  %
+Kappa statistic                          0.5706
+Mean absolute error                      0.0546
+Root mean squared error                  0.1957
+Relative absolute error                 52.0043 %
+Root relative squared error             88.0393 %
+Coverage of cases (0.95 level)          96.507  %
+Mean rel. region size (0.95 level)      37.2584 %
+Total Number of Instances             2777
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.635     0.048      0.425     0.635     0.509      0.942    grain
+                 0.366     0.014      0.406     0.366     0.385      0.926    wheat
+                 0.96      0.164      0.986     0.96      0.973      0.965    notGrainOrWheat
+Weighted Avg.    0.928     0.154      0.941     0.928     0.933      0.962
+
+This means that we will need to implement supervised discretisation with scikit if we want to pursue this strategy.
