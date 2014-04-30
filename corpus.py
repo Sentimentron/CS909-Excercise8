@@ -8,18 +8,22 @@ def read_corpus():
     with open('converted.xml','r') as fp:
         root = etree.parse(fp)
         for reuters in root.findall("Reuters"):
+            topics = set([])
             for topic in reuters.findall(".//Topic"):
-                title = reuters.find("Title")
-                text  = reuters.find("Text")
-                if title is None:
-                    continue
-                if text is None:
-                    continue
-                yield (reuters.get("lewissplit"), topic.text, title.text, text.text)
+                topics.add(topic.text)
+
+            topic = "-".join(sorted(topics))
+            title = reuters.find("Title")
+            text  = reuters.find("Text")
+            if title is None:
+                continue
+            if text is None:
+                continue
+            yield (reuters.get("lewissplit"), topic, title.text, text.text)
 
 def filtered_corpus():
     for train, topic, title, text in read_corpus():
-        if topic not in ["earn","acq","money-fx","crude","grain","trade","interest","wheat","ship","corn"]:
+        if topic not in ['earn', 'acq', 'crude', 'trade', 'money-fx', 'interest', 'interest-money-fx', 'grain-wheat', 'ship', 'money-supply']:
             continue
         yield train, topic, title, text
 

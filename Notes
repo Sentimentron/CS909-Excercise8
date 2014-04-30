@@ -480,3 +480,135 @@ Total Number of Instances             2777
 Weighted Avg.    0.928     0.154      0.941     0.928     0.933      0.962
 
 This means that we will need to implement supervised discretisation with scikit if we want to pursue this strategy.
+
+PRE720 investigates using document term counts, LinearSVC accuracy dropped to 76%.
+PRE720 was repurposed to use document + title unigram presence. Accuracy increased to 86%.
+
+[[1063    0    2    0    0   14    0    0    2    0] e
+ [   2   14    0    5    3    1   42    1    1    2] w
+ [   3    0  140    0    2    4    0   29    2    0] m
+ [   1    1    1   16    2    1   33    1    0    0] c
+ [   0    0    4    0  107    0    3    2    1    0] t
+ [  22    0    2    0    1  688    0    0    5    0] a
+ [   3   14    2   17    8    3   92    3    1    5] g
+ [   1    0   42    0    1    1    0   86    1    1] i
+ [   7    0    1    0    3   13    1    1  149   11] c
+ [   6    0    4    0    3    2    3    0   28   41]]s
+  	 e    w    m    c    t    a    g    i    c    s
+
+             precision    recall  f1-score   support
+
+       earn       0.96      0.98      0.97      1081
+      wheat       0.48      0.20      0.28        71
+   money-fx       0.71      0.78      0.74       180
+       corn       0.42      0.29      0.34        56
+      trade       0.82      0.91      0.87       117
+        acq       0.95      0.96      0.95       718
+      grain       0.53      0.62      0.57       148
+   interest       0.70      0.65      0.67       133
+      crude       0.78      0.80      0.79       186
+       ship       0.68      0.47      0.56        87
+
+Still regularly getting confused between corn, wheat, and grain.
+To see if we can tell the difference, PRE721 removes any documents which aren't corn, wheat, grain, uses synsets as before.
+
+LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+     intercept_scaling=1, loss=l2, multi_class=ovr, penalty=l2,
+     random_state=None, tol=0.0001, verbose=0)
+0.538181818182
+[[ 17   5  49]
+ [  1  13  42]
+ [ 17  13 118]]
+             precision    recall  f1-score   support
+
+      grain       0.56      0.80      0.66       148
+       corn       0.42      0.23      0.30        56
+      wheat       0.49      0.24      0.32        71
+
+avg / total       0.51      0.54      0.50       275
+
+Not too impressive if I'm honest. Next add titles and see what that does.
+0.530909090909
+[[ 25   6  40]
+ [  6  18  32]
+ [ 26  19 103]]
+             precision    recall  f1-score   support
+
+      grain       0.59      0.70      0.64       148
+       corn       0.42      0.32      0.36        56
+      wheat       0.44      0.35      0.39        71
+
+avg / total       0.52      0.53      0.52       275
+
+It's better, but not brilliant.
+A quick look at the data explains why this happens: corn, wheat and grain often appear as topics together. To truly disambiguate them, we need to rethink the way domains are handled.
+
+Joining together all the topics in alphabetical order makes the most common topics:
+[('earn', 3922), ('acq', 2359), ('crude', 404), ('trade', 360), ('money-fx', 305), ('interest', 284), ('interest-money-fx', 171), ('grain-wheat', 163), ('ship', 157), ('money-supply', 153)]
+
+
+PRE720 when run under this new topic reader:
+
+0.93010989011
+[[1067    0    0    0   10    0    0    0    0    0] e
+ [   6   51    2    3   12    0    6    0    7    0] m
+ [   0    0   23    0    0    0    4    1    0    0] ms
+ [   0    0    0   76    0    0    0    0    0    0] t
+ [  25    1    0    2  665    0    0    2    0    0] a
+ [   0    0    0    0    0   35    0    0    0    0] gw
+ [   0    5    3    0    1    0   62    0   11    0] i
+ [   4    1    0    3    7    0    0  102    1    1] c
+ [   1   18    1    2    1    0    6    1   10    0] imf
+ [   2    0    0    1    3    0    1    4    0   25]] s
+     e    m    ms   t    a    gw   i    c    imf  s
+
+                   precision    recall  f1-score   support
+
+             earn       0.97      0.99      0.98      1077
+         money-fx       0.67      0.59      0.63        87
+     money-supply       0.79      0.82      0.81        28
+            trade       0.87      1.00      0.93        76
+              acq       0.95      0.96      0.95       695
+      grain-wheat       1.00      1.00      1.00        35
+         interest       0.78      0.76      0.77        82
+            crude       0.93      0.86      0.89       119
+interest-money-fx       0.34      0.25      0.29        40
+             ship       0.96      0.69      0.81        36
+
+      avg / total       0.93      0.93      0.93      2275
+
+
+Of course, we still want to maintain the top 10 categories. Revert that change and combine the
+
+PRE721 revises the sentence model to allow terms like 'U.S.' to get through the filter. Peversely, this decreases F-measure on the money-fx category, but boosts it on the interest-money-fx category.
+Might want to include some bigrams like "money market" which are common in money-fx stories
+
+PRE721...
+
+0.941978021978
+[[1070    0    0    0    7    0    0    0    0    0]
+ [   2   55    1    3   14    0    8    0    4    0]
+ [   0    0   23    1    0    0    4    0    0    0]
+ [   0    0    0   75    1    0    0    0    0    0]
+ [  17    1    0    0  675    0    0    1    0    1]
+ [   0    0    0    0    0   35    0    0    0    0]
+ [   0    4    1    1    1    0   64    0   11    0]
+ [   2    0    0    1    5    0    0  109    0    2]
+ [   1   13    0    2    1    0    8    2   13    0]
+ [   2    2    0    1    4    0    0    3    0   24]]
+                   precision    recall  f1-score   support
+
+             earn       0.98      0.99      0.99      1077
+         money-fx       0.73      0.63      0.68        87
+     money-supply       0.92      0.82      0.87        28
+            trade       0.89      0.99      0.94        76
+              acq       0.95      0.97      0.96       695
+      grain-wheat       1.00      1.00      1.00        35
+         interest       0.76      0.78      0.77        82
+            crude       0.95      0.92      0.93       119
+interest-money-fx       0.46      0.33      0.38        40
+             ship       0.89      0.67      0.76        36
+
+      avg / total       0.94      0.94      0.94      2275
+
+Considering bigrams as well... [PRE752]
