@@ -612,3 +612,12 @@ interest-money-fx       0.46      0.33      0.38        40
       avg / total       0.94      0.94      0.94      2275
 
 Considering bigrams as well... [PRE752]
+
+PRE722 tried decreasing minimum threshold to 3, wasn't effective
+Then tried upping it to 4, decreased accuracy slightly
+Then tried decreasing the number of most popular words to 10 from 50
+    Wasn't effective
+Also tried relaxing the allowed attributes further
+    /s allowed
+    -s allowed
+    's allowed
