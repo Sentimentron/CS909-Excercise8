@@ -73,14 +73,13 @@ def bench(estimator, name, data):
     t0 = time()
     features, labels = data
     estimator.fit(data)
-    print('% 9s   %.2fs   %.3f   %.3f   %.3f   %.3f   %.3f'
-          % (name, (time() - t0),
+    fp = open('dbscan.tuning', 'a')
+    print >> fp, '% 9s   %.2fs   %.3f   %.3f   %.3f   %.3f   %.3f' % (name, (time() - t0),
              metrics.homogeneity_score(labels, estimator.labels_),
              metrics.completeness_score(labels, estimator.labels_),
              metrics.v_measure_score(labels, estimator.labels_),
              metrics.adjusted_rand_score(labels, estimator.labels_),
              metrics.adjusted_mutual_info_score(labels,  estimator.labels_))
-          )
 
 if __name__ == "__main__":
     features, labels, clusters = load_data()
@@ -107,5 +106,6 @@ if __name__ == "__main__":
 
     print label_mapping
     features, labels, clusters = load_data()
-    d = DBSCANSparse(0.9, 10)
-    bench(d, "DBSCAN", (features, labels))
+    for eps, minpts in itertools.product([i/100.0 + 0.95 for i in range(5)], [100, 150, 200]):
+        d = DBSCANSparse(eps, minpts)
+        bench(d, "DBSCAN_%.2f_%d" % (eps, minpts), (features, labels))

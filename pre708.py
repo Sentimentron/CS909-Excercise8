@@ -8,7 +8,7 @@ import csv
 def preprocess_docs():
     stopwords = nltk.corpus.stopwords.words('english')
     for train, topic, title, text in filtered_corpus():
-        text = [i for i in nltk.word_tokenize(text) if i not in stopwords]
+        text = [i for i in nltk.word_tokenize(title) if i not in stopwords]
         yield train, topic, text
 
 def export_to_arff(mode, output_path):

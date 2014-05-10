@@ -660,3 +660,4 @@ k-means++   27.50s    619219   0.272   0.312   0.290   0.190   0.270    -0.034
 PCA-based   5.00s    615911   0.255   0.277   0.265   0.233   0.253    -0.092
 
 PRE728 tells me that Jaccard distance is inappropriate: data must be quite sparse
+DBSCAN   73.08s   0.145   0.290   0.193   0.212   0.143
