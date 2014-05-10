@@ -438,18 +438,15 @@ This section next considers how to convert the document's features into
  To conduct this test, exploratory Python scripts were used to process the
  raw corpus generated earlier and produce result files in the ARFF file
  format for exploration in the WEKA machine learning environment.
- This helps to rapidly determine which experimental route is the most promising.
+ This helped to rapidly determine a promising experimental route is the
+ most promising.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float table
 wide false
 sideways false
-status collapsed
-
-\begin_layout Plain Layout
-
-\end_layout
+status open
 
 \begin_layout Plain Layout
 \begin_inset Tabular
@@ -558,7 +555,7 @@ Naive Bayes
 \begin_inset Text
 
 \begin_layout Plain Layout
-72.09%
+73.10%
 \end_layout
 
 \end_inset
@@ -567,7 +564,7 @@ Naive Bayes
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+0.692
 \end_layout
 
 \end_inset
@@ -710,6 +707,34 @@ Comparison of accuracies.
 \end_inset
 
 
+\end_layout
+
+\begin_layout Description
+PRE700 
+\end_layout
+
+\begin_layout Description
+PRE708 Investigates using binary title unigrams, achieving impressive accuracy
+ even with very little pre-processing.
+\end_layout
+
+\begin_layout Description
+PRE709 Investigates using text unigram frequencies from the document text.
+ 
+\end_layout
+
+\begin_layout Description
+PRE710 Builds on PRE708 by adding more stringent pre-processing (removing
+ words containing punctuation and numbers).
+ Overall performance falls slightly.
+\end_layout
+
+\begin_layout Description
+PRE711
+\end_layout
+
+\begin_layout Description
+PRE713 Investigates whether it's pssible to 
 \end_layout
 
 \begin_layout Section
