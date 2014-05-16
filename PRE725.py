@@ -6,8 +6,10 @@ from scipy import sparse
 from time import time
 
 def load_data():
-    features = np.load("features.npy")
+    y = np.load("features.npy.npz")
+    print y
     labels   = np.load("labels.npy")
+    features = sparse.coo_matrix((y['data'], (y['row'], y['col'])), shape=y['shape']).tocsc()
     return features, labels
 
 def bench_k_means(estimator, name, data, labels):
@@ -26,10 +28,9 @@ def bench_k_means(estimator, name, data, labels):
                                       sample_size=300)))
 
 if __name__ == "__main__":
-    features, labels = load_data()
+    data, labels = load_data()
     distinct_labels = set(labels)
     n_clusters = len(distinct_labels)
-    data = sparse.csc_matrix(features)
 
     bench_k_means(KMeans(init='k-means++', n_clusters=n_clusters, n_init=10),
               name="k-means++", data=data, labels=labels)
