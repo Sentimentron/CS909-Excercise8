@@ -7,10 +7,11 @@ import csv
 
 def preprocess_docs():
     stopwords = nltk.corpus.stopwords.words('english')
+    stemmer = nltk.stem.PorterStemmer()
     for train, topic, title, text in filtered_corpus():
         text = [i for i in nltk.word_tokenize(text) if i not in stopwords]
-        title = [i for i in nltk.word_tokenize(title) if i.lower() not in stopwords]
-        yield train, topic, title
+        text = [stemmer.stem(s) for s in text]
+        yield train, topic, text
 
 def export_to_arff(mode, output_path):
     assert mode in ["TRAIN", "TEST"]
@@ -51,5 +52,5 @@ def export_to_arff(mode, output_path):
     output_f.close()
 
 if __name__ == "__main__":
-    export_to_arff("TRAIN", "PRE709_train.arff")
-    export_to_arff("TEST", "PRE709_test.arff")
+    export_to_arff("TRAIN", "PRE711_train.arff")
+    export_to_arff("TEST", "PRE711_test.arff")
