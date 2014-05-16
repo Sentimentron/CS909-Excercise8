@@ -142,3 +142,4 @@ if __name__ == "__main__":
     save_sparse_matrix("features.npy", Xtrain)
     print "Saving labels..."
     np.save("labels.npy",Ytrain)
+    np.save("topics.npy",topics)
