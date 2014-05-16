@@ -7,6 +7,7 @@ from time import time
 from collections import Counter
 import itertools
 import pydbscan
+import random
 
 def load_data():
     y = np.load("features.npy.npz")
@@ -18,6 +19,8 @@ def load_data():
 def get_most_likely_class_map(estimated_labels, actual_labels):
     counter = {}
     for i, j in zip(estimated_labels, actual_labels):
+        if i == 0: 
+            continue
         if i not in counter:
             counter[i] = Counter()
         counter[i].update([j])
@@ -32,17 +35,17 @@ def print_classification_metrics(estimated_labels_, actual_labels_):
     estimated_labels = []
     actual_labels = []
     for i, j in zip(estimated_labels_, actual_labels_):
-        if i == 0:
-            continue
-        estimated_labels.append(i-1)
+        estimated_labels.append(i)
         actual_labels.append(j)
-
     mapping = get_most_likely_class_map(estimated_labels, actual_labels)
     predicted_labels = []
     for i in estimated_labels:
+        if i == 0:
+            predicted_labels.append(-1)
+            continue
         predicted_labels.append(mapping[i])
 
-    return metrics.classification_report(predicted_labels, actual_labels)
+    return metrics.classification_report(predicted_labels, actual_labels), predicted_labels, actual_labels
 
 class DBSCANSparse(object):
 
@@ -85,21 +88,22 @@ def bench(estimator, name, data):
     t0 = time()
     features, labels = data
     estimator.fit(data)
-    fp = open('dbscan.tuning', 'a')
+    fp = open('dbscan.stochastic', 'a')
     print >> fp, "*************"
+    report, pred, actual = print_classification_metrics(estimator.labels_, labels)
+    print >> fp, report
     print >> fp, '% 9s   %.2fs   %.3f   %.3f   %.3f   %.3f   %.3f' % (name, (time() - t0),
-             metrics.homogeneity_score(labels, estimator.labels_),
-             metrics.completeness_score(labels, estimator.labels_),
-             metrics.v_measure_score(labels, estimator.labels_),
-             metrics.adjusted_rand_score(labels, estimator.labels_),
-             metrics.adjusted_mutual_info_score(labels,  estimator.labels_))
+             metrics.homogeneity_score(actual, pred),
+             metrics.completeness_score(actual, pred),
+             metrics.v_measure_score(actual, pred),
+             metrics.adjusted_rand_score(actual, pred),
+             metrics.adjusted_mutual_info_score(actual, pred))
 
-    print >> fp, print_classification_metrics(estimator.labels_, labels)
     fp.close()
 
 if __name__ == "__main__":
     features, labels = load_data()
-
-    for eps, minpts in itertools.product([i/20.0 + 0.10 for i in range(19)], [2, 5]):
-        d = DBSCANSparse(eps, minpts)
-        bench(d, "DBSCAN_%.2f_%d" % (eps, minpts), (features, labels))
+    eps = random.random()
+    minpts = random.randint(2,5)
+    d = DBSCANSparse(eps, minpts)
+    bench(d, "DBSCAN_%.2f_%d" % (eps, minpts), (features, labels))

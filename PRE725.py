@@ -19,7 +19,7 @@ def get_most_likely_class_map(estimated_labels, actual_labels):
     for i, j in zip(estimated_labels, actual_labels):
         if i not in counter:
             counter[i] = Counter()
-        counter[i].update([i])
+        counter[i].update([j])
     ret = {}
     for i in counter:
         c, _ = counter[i].most_common(1)[0]
