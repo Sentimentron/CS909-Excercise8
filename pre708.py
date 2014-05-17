@@ -50,5 +50,5 @@ def export_to_arff(mode, output_path):
     output_f.close()
 
 if __name__ == "__main__":
-    export_to_arff("TRAIN", "PRE708_train.arff")
-    export_to_arff("TEST", "PRE708_test.arff")
+    export_to_arff("TRAIN", "PRE709_train.arff")
+    export_to_arff("TEST", "PRE709_test.arff")
