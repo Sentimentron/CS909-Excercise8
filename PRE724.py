@@ -4,7 +4,8 @@ import nltk
 from collections import Counter
 import re
 import csv
-
+import scipy
+import scipy.io
 import numpy as np
 from sklearn import metrics
 from sklearn.naive_bayes import MultinomialNB
@@ -91,7 +92,8 @@ def get_features(attributes=None, topics=None):
         attributes = attributes_dict
 
     # Construct binary matrix
-    X = np.zeros((len(corpus), len(attributes)), dtype='bool')
+    # X = np.zeros((len(corpus), len(attributes)), dtype='bool')
+    X = scipy.sparse.dok_matrix((len(corpus), len(attributes)), dtype='bool')
     Y = [0 for _ in range(len(corpus))]
 
     if topics is None:
@@ -113,22 +115,31 @@ def get_features(attributes=None, topics=None):
         for word in title:
             if word in attributes:
                 offset = attributes[word]
-                X[row][offset] = 1
+                X[(row, offset)] = 1
             if prev is not None:
                 bigram = "%s|%s" % (prev, word)
                 if bigram in attributes:
                     offset = attributes[bigram]
-                    X[row][offset] = 1
+                    X[(row, offset)] = 1
             prev = word
 
         Y[row] = topics[topic]
 
-    return X, Y, attributes, topics
+    return X.tocoo(), Y, attributes, topics
+
+def save_sparse_matrix(filename,x):
+    x_coo=x.tocoo()
+    row=x_coo.row
+    col=x_coo.col
+    data=x_coo.data
+    shape=x_coo.shape
+    np.savez(filename,row=row,col=col,data=data,shape=shape)
 
 if __name__ == "__main__":
     print "Creating input..."
     Xtrain, Ytrain, attributes, topics = get_features()
     print "Saving features..."
-    np.save("features.npy",Xtrain)
+    save_sparse_matrix("features.npy", Xtrain)
     print "Saving labels..."
     np.save("labels.npy",Ytrain)
+    np.save("topics.npy",topics)
